@@ -15,19 +15,22 @@ export default function App() {
   const [priority, setPriority] = useState("low");
   const [showFavorite, setShowFavorite] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState('none')
-  
+  const [sortBy, setSortBy] = useState("none");
+  const [statusFilter, setStatusFilter] = useState('all')
 
   const finalTodo = todos
-  .filter((t) => (showFavorite ? t.favorite : true))
-  .filter((t) => t.text.toLowerCase().includes(searchQuery.toLowerCase()))
+    .filter((t) => (showFavorite ? t.favorite : true))
+    .filter((t) => t.text.toLowerCase().includes(searchQuery.toLowerCase()))
+    .filter((t) => {
+      if(statusFilter === 'active') return !t.completed
+      if(statusFilter === 'completed') return t.completed
+      return true
+    })
 
-  if(sortBy === 'priority') {
-    const order = {high: 3, medium: 2, low: 1}
-    finalTodo.sort((a, b) => order[b.priority] - order[a.priority])
+  if (sortBy === "priority") {
+    const order = { high: 3, medium: 2, low: 1 };
+    finalTodo.sort((a, b) => order[b.priority] - order[a.priority]);
   }
-  
-
 
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
@@ -43,7 +46,7 @@ export default function App() {
       priority: priority,
       favorite: false,
     };
-    setTodos((prev) => [...prev, newTodo]);
+    setTodos((prev) => [newTodo, ...prev]);
     setValue("");
     console.log(newTodo);
   }
@@ -67,6 +70,12 @@ export default function App() {
     console.log(todos);
   }
 
+  function editTodo(id, newText) {
+    setTodos((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, text: newText } : t))
+    );
+  }
+
   return (
     <div>
       <h1 className="text-4xl font-bold mb-10">Todo List</h1>
@@ -84,13 +93,18 @@ export default function App() {
         setPriority={setPriority}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-       
+        sortBy={sortBy}
+        setSortby={setSortBy}
+        setStatusFilter={setStatusFilter}
+        statusFilter={statusFilter}
       />
       <ItemList
         todos={finalTodo}
         onToggle={toggleTodo}
         onDelete={deleteTodo}
         onFavorite={toggleFavorite}
+        searchQuery={searchQuery}
+        onEdit={editTodo}
       />
       <div className="">
         <div className="">Всего: {todos.length}</div>
