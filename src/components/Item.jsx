@@ -50,6 +50,9 @@ export default function Item({
             }}
           />
         )}
+        <small className="text-gray-400 text-xs">
+          Created: {new Date(todo.createdAt).toLocaleString()}
+        </small>
 
         <span
           className={`px-2 py-1 text-sm rounded ${

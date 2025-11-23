@@ -45,6 +45,7 @@ export default function App() {
       completed: false,
       priority: priority,
       favorite: false,
+      createdAt: new Date().toISOString()
     };
     setTodos((prev) => [newTodo, ...prev]);
     setValue("");
