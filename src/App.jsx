@@ -16,16 +16,16 @@ export default function App() {
   const [showFavorite, setShowFavorite] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("none");
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const finalTodo = todos
     .filter((t) => (showFavorite ? t.favorite : true))
     .filter((t) => t.text.toLowerCase().includes(searchQuery.toLowerCase()))
     .filter((t) => {
-      if(statusFilter === 'active') return !t.completed
-      if(statusFilter === 'completed') return t.completed
-      return true
-    })
+      if (statusFilter === "active") return !t.completed;
+      if (statusFilter === "completed") return t.completed;
+      return true;
+    });
 
   if (sortBy === "priority") {
     const order = { high: 3, medium: 2, low: 1 };
@@ -45,7 +45,7 @@ export default function App() {
       completed: false,
       priority: priority,
       favorite: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
     setTodos((prev) => [newTodo, ...prev]);
     setValue("");
@@ -78,14 +78,17 @@ export default function App() {
   }
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold mb-10">Todo List</h1>
-      <button
-        className="bg-blue-300 p-5 cursor-pointer"
-        onClick={() => setShowFavorite((prev) => !prev)}
-      >
-        {showFavorite ? "Show All" : "Show Favorite"}
-      </button>
+    <div className="px-8">
+      <div className="flex justify-between">
+        <h1 className="text-4xl font-bold mb-10">Todo List</h1>
+        <div className="flex gap-10 items-start">
+          <div className="text-xl font-medium">Всего: {todos.length}</div>
+          <div className="text-xl font-medium">
+            Выполнено: {todos.filter((t) => t.completed).length}
+          </div>
+        </div>
+      </div>
+      
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}
@@ -98,6 +101,8 @@ export default function App() {
         setSortby={setSortBy}
         setStatusFilter={setStatusFilter}
         statusFilter={statusFilter}
+        setShowFavorite={setShowFavorite}
+        showFavorite={showFavorite}
       />
       <ItemList
         todos={finalTodo}
@@ -107,12 +112,6 @@ export default function App() {
         searchQuery={searchQuery}
         onEdit={editTodo}
       />
-      <div className="">
-        <div className="">Всего: {todos.length}</div>
-        <div className="">
-          Выполнено: {todos.filter((t) => t.completed).length}
-        </div>
-      </div>
     </div>
   );
 }
